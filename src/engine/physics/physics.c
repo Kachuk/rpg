@@ -297,7 +297,7 @@ void physics_update(void) {
 	}
 }
 
-usize physics_body_create(vec2 position, vec2 size, vec2 velocity, i16 body_existence_timelimit, u8 collision_layer, u8 collision_mask, bool is_kinematic, Movement_Handler movement_handler, On_Hit on_hit, On_Hit_Static on_hit_static, usize entity_id) {
+usize physics_body_create(vec2 position, vec2 size, vec2 velocity, i16 body_existence_timelimit, u8 collision_layer, u8 collision_mask, bool is_kinematic, Movement_Handler movement_handler, Body* attached_to_body, On_Hit on_hit, On_Hit_Static on_hit_static, usize entity_id) {
 	usize id = state.body_list->len;
 
 	// Find inactive Body.
@@ -328,6 +328,7 @@ usize physics_body_create(vec2 position, vec2 size, vec2 velocity, i16 body_exis
 		.collision_layer = collision_layer,
 		.collision_mask = collision_mask,
 		.movement_handler = movement_handler,
+        .attached_to_body = attached_to_body,
         .on_hit = on_hit,
 		.on_hit_static = on_hit_static,
 		.is_kinematic = is_kinematic,
@@ -358,7 +359,7 @@ usize physics_static_body_create(vec2 position, vec2 size, u8 collision_layer) {
 }
 
 usize physics_trigger_create(vec2 position, vec2 size, u8 collision_layer, u8 collision_mask, Movement_Handler movement_handler, On_Hit on_hit) {
-    return physics_body_create(position, size, (vec2){0, 0}, 10000, collision_layer, collision_mask, true, movement_handler, on_hit, NULL, (usize)-1);
+    return physics_body_create(position, size, (vec2){0, 0}, 10000, collision_layer, collision_mask, true, movement_handler, NULL, on_hit, NULL, (usize)-1);
 }
 
 Static_Body *physics_static_body_get(usize index) {

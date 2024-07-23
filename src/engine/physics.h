@@ -27,6 +27,7 @@ struct body {
     i8 body_existence_duration;
     i16 body_existence_timelimit;
     Movement_Handler movement_handler;
+    struct body * attached_to_body;
 	On_Hit on_hit;
 	On_Hit_Static on_hit_static;
     usize entity_id;
@@ -51,7 +52,7 @@ struct hit {
 
 void physics_init(void);
 void physics_update(void);
-usize physics_body_create(vec2 position, vec2 size, vec2 velocity, i16 body_existence_timelimit, u8 collision_layer, u8 collision_mask, bool is_kinematic, Movement_Handler movement_handler, On_Hit on_hit, On_Hit_Static on_hit_static, usize entity_id);
+usize physics_body_create(vec2 position, vec2 size, vec2 velocity, i16 body_existence_timelimit, u8 collision_layer, u8 collision_mask, bool is_kinematic, Movement_Handler movement_handler, Body* attached_to_body, On_Hit on_hit, On_Hit_Static on_hit_static, usize entity_id);
 usize physics_trigger_create(vec2 position, vec2 size, u8 collision_layer, u8 collision_mask, Movement_Handler movement_handler ,On_Hit on_hit);
 Body *physics_body_get(usize index);
 Static_Body *physics_static_body_get(usize index);

@@ -12,8 +12,8 @@
 
 static f32 window_width = 1980;
 static f32 window_height = 1080;
-static f32 render_width = 640;
-static f32 render_height = 360;
+static f32 render_width = 800;
+static f32 render_height = 600;
 static f32 scale = 1;
 
 static u32 vao_quad;
