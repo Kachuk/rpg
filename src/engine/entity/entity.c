@@ -8,7 +8,7 @@ void entity_init(void) {
 	entity_list = array_list_create(sizeof(Entity), 0);
 }
 
-usize entity_create(vec2 position, vec2 size, vec2 sprite_offset, vec2 velocity, i16 body_existence_timelimit,  u8 collision_layer, u8 collision_mask, bool is_kinematic, usize animation_id, Movement_Handler movement_handler, On_Hit on_hit, On_Hit_Static on_hit_static) {
+usize entity_create(vec2 position, vec2 size, vec2 sprite_offset, vec2 velocity, i16 body_existence_timelimit,  u8 collision_layer, u8 collision_mask, bool is_kinematic, usize animation_id, Movement_Handler movement_handler, Body* attached_to_body ,On_Hit on_hit, On_Hit_Static on_hit_static) {
 	usize id = entity_list->len;
 
 	// Find inactive Entity.
@@ -31,7 +31,7 @@ usize entity_create(vec2 position, vec2 size, vec2 sprite_offset, vec2 velocity,
 	*entity = (Entity){
 		.is_active = true,
 		.animation_id = animation_id,
-		.body_id = physics_body_create(position, size, velocity, body_existence_timelimit , collision_layer, collision_mask, is_kinematic, movement_handler, on_hit, on_hit_static, id),
+		.body_id = physics_body_create(position, size, velocity, body_existence_timelimit , collision_layer, collision_mask, is_kinematic, movement_handler, attached_to_body, on_hit, on_hit_static, id),
         .sprite_offset = { sprite_offset[0], sprite_offset[1] },
 	};
 

@@ -132,10 +132,10 @@ static void spawn_projectile(Projectile_Type projectile_type) {
     Animation *animation = animation_get(player->animation_id);
     bool is_flipped = animation->is_flipped;
     vec2 velocity = {is_flipped ? -weapon.projectile_speed : weapon.projectile_speed, 0};
-    u32 projectile_duration = 100;
+    u32 projectile_duration = 30;
 
     entity_create(body->aabb.position, weapon.sprite_size, weapon.sprite_offset, velocity, projectile_duration, 
-                  COLLISION_LAYER_PROJECTILE, projectile_mask, true, weapon.projectile_animation_id, default_movement_handler, 
+                  COLLISION_LAYER_PROJECTILE, projectile_mask, true, weapon.projectile_animation_id, katana_movement_handler, body,
                   projectile_on_hit, projectile_on_hit_static);
 
     audio_sound_play(weapon.sfx);
@@ -181,12 +181,10 @@ static void input_handle(Body *body_player) {
 	if (global.input.up) {
 		
         vely = SPEED_PLAYER;
-        printf("UPPP");
     }
 
     if (global.input.down) {
 		vely = -SPEED_PLAYER;
-        printf("TEST");
 		
     }
 
@@ -276,7 +274,7 @@ void spawn_enemy(bool is_small, bool is_enraged, bool is_flipped) {
     }
 
     vec2 velocity = {is_flipped ? -speed : speed, 0};
-    usize id = entity_create(position, size, sprite_offset, velocity, MAX_ENTITY_DURATION, COLLISION_LAYER_ENEMY, enemy_mask, false, animation_id, default_movement_handler,NULL, on_hit_static);
+    usize id = entity_create(position, size, sprite_offset, velocity, MAX_ENTITY_DURATION, COLLISION_LAYER_ENEMY, enemy_mask, false, animation_id, default_movement_handler,NULL, NULL, on_hit_static);
     Entity *entity = entity_get(id);
     entity->is_enraged = is_enraged;
 }
@@ -306,7 +304,7 @@ void reset(void) {
     shoot_timer = 0;
     // i need to add a bool to make a body unexpirable
     // TODO: Change handler to player_movement_handler
-	player_id = entity_create((vec2){100, 200}, (vec2){24, 24}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION * 2 ,COLLISION_LAYER_PLAYER, player_mask, true, (usize)-1, kinetic_movement_handler,player_on_hit, player_on_hit_static);
+	player_id = entity_create((vec2){100, 200}, (vec2){24, 24}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION * 2 ,COLLISION_LAYER_PLAYER, player_mask, true, (usize)-1, kinetic_movement_handler, NULL,player_on_hit, player_on_hit_static);
 
     // Init level.
 	{
@@ -322,12 +320,12 @@ void reset(void) {
 		//physics_static_body_create((vec2){16, render_height - 64}, (vec2){32, 64}, COLLISION_LAYER_ENEMY_PASSTHROUGH);
 		//physics_static_body_create((vec2){render_width - 16, render_height - 64}, (vec2){32, 64}, COLLISION_LAYER_ENEMY_PASSTHROUGH);
         
-        physics_trigger_create((vec2){render_width * 0.5, -4}, (vec2){64, 8}, 0, fire_mask, kinetic_movement_handler,fire_on_hit);
+        physics_trigger_create((vec2){render_width * 0.5, -4}, (vec2){64, 8}, 0, fire_mask, kinetic_movement_handler, fire_on_hit);
 	}
 
-    entity_create((vec2){render_width * 0.5, 0}, (vec2){32, 64}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION, 0, 0, true, anim_fire_id, static_movement_handler,NULL, NULL);
-    entity_create((vec2){render_width * 0.5 + 16, -16}, (vec2){32, 64}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION, 0, 0, true, anim_fire_id, static_movement_handler,NULL, NULL);
-    entity_create((vec2){render_width * 0.5 - 16, -16}, (vec2){32, 64}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION,0, 0, true, anim_fire_id, static_movement_handler,NULL, NULL);
+    entity_create((vec2){render_width * 0.5, 0}, (vec2){32, 64}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION, 0, 0, true, anim_fire_id, static_movement_handler,NULL,NULL, NULL);
+    entity_create((vec2){render_width * 0.5 + 16, -16}, (vec2){32, 64}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION, 0, 0, true, anim_fire_id, static_movement_handler,NULL,NULL, NULL);
+    entity_create((vec2){render_width * 0.5 - 16, -16}, (vec2){32, 64}, (vec2){0, 0}, (vec2){0, 0}, MAX_ENTITY_DURATION,0, 0, true, anim_fire_id, static_movement_handler,NULL,NULL, NULL);
 }
 
 int main(int argc, char *argv[]) {
@@ -399,11 +397,11 @@ int main(int argc, char *argv[]) {
     
     weapons[WEAPON_TYPE_KATANA] = (Weapon) {
         .projectile_type = PROJECTILE_TYPE_KATANA,
-            .projectile_speed = 50,
-            .fire_rate = 0.5,
-            .recoil = 20.0,
+            .projectile_speed = 0,
+            .fire_rate = 0.3,
+            .recoil = 0.0,
             .projectile_animation_id = anim_projectile_small_id,
-            .sprite_size = {50, 50},
+            .sprite_size = {20, 20},
             .sprite_offset = {0, 0},
             .sfx = SOUND_SHOOT
     };
